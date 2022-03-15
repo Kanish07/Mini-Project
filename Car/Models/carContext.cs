@@ -133,10 +133,9 @@ namespace Car.Models
                     .HasColumnName("userCity");
 
                 entity.Property(e => e.UserRole)
-                    .HasMaxLength(10)
                     .IsUnicode(false)
-                    .HasColumnName("userRole")
-                    .HasDefaultValueSql("('USER')");
+                    .HasColumnName("userRole")  
+                    .HasDefaultValueSql("(0)");
 
                 entity.Property(e => e.Useremail)
                     .HasMaxLength(256)

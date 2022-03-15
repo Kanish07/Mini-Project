@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Car.Models;
+using Car.Entities;
+using Car.Helpers;
 
 namespace Car.Controllers
 {
+    [Authorize(Role.Admin)]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -51,7 +54,7 @@ namespace Car.Controllers
             {
                 return BadRequest();
             }
-
+            user.Userpassword = BCrypt.Net.BCrypt.HashPassword(user.Userpassword);   
             _context.Entry(user).State = EntityState.Modified;
 
             try
@@ -78,6 +81,7 @@ namespace Car.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
+            user.Userpassword = BCrypt.Net.BCrypt.HashPassword(user.Userpassword);
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 

@@ -261,3 +261,8 @@
 /Users/kanishkar/Desktop/Mini Project/Car/obj/Debug/net6.0/ref/Car.dll
 /Users/kanishkar/Desktop/Mini Project/Car/obj/Debug/net6.0/Car.pdb
 /Users/kanishkar/Desktop/Mini Project/Car/obj/Debug/net6.0/Car.genruntimeconfig.cache
+/Users/kanishkar/Desktop/Mini Project/Car/bin/Debug/net6.0/BCrypt.Net-Next.dll
+/Users/kanishkar/Desktop/Mini Project/Car/bin/Debug/net6.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/Users/kanishkar/Desktop/Mini Project/Car/bin/Debug/net6.0/Microsoft.AspNetCore.JsonPatch.dll
+/Users/kanishkar/Desktop/Mini Project/Car/bin/Debug/net6.0/Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+/Users/kanishkar/Desktop/Mini Project/Car/bin/Debug/net6.0/Newtonsoft.Json.Bson.dll

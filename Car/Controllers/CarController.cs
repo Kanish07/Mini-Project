@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Car.Models;
+using Car.Entities;
+using Car.Helpers;
 
 namespace Car.Models
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CarController : ControllerBase

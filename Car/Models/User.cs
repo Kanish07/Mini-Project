@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Car.Entities;
 
 namespace Car.Models
 {
@@ -17,7 +18,7 @@ namespace Car.Models
         public string Username { get; set; } = null!;
         public string? Userphno { get; set; }
         public string UserCity { get; set; } = null!;
-        public string? UserRole { get; set; }
+        public Role UserRole { get; set; }
 
         public virtual ICollection<Car> Cars { get; set; }
         public virtual ICollection<Purchase> Purchases { get; set; }
