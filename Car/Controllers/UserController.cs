@@ -29,16 +29,7 @@ namespace Car.Controllers
         {
             try
             {
-                var user = from u in _context.Users
-                           select new
-                           {
-                               Userid = u.Userid,
-                               Useremail = u.Useremail,
-                               Username = u.Username,
-                               UserCity = u.UserCity,
-                               Userphno = u.Userphno,
-                               UserRole = u.UserRole
-                           };
+                var user = _context.Users.Include(u => u.Cars).Include(u => u.Purchases);
                 return Ok(new { status = "success", data = await user.ToListAsync(), message = "Get All Users Successful" });
             }
             catch (System.Exception e)
@@ -81,6 +72,7 @@ namespace Car.Controllers
             catch (System.Exception e)
             {
                 Console.WriteLine(e);
+                Sentry.SentrySdk.CaptureException(e);
                 return NotFound(new { status = "failed", serverMessage = e.Message, message = "User Not Found" });
             }
         }
@@ -90,10 +82,6 @@ namespace Car.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUserById(Guid id, User user)
         {
-            if (id != user.Userid)
-            {
-                return BadRequest();
-            }
             user.Userpassword = BCrypt.Net.BCrypt.HashPassword(user.Userpassword);
             _context.Entry(user).State = EntityState.Modified;
 
@@ -101,15 +89,17 @@ namespace Car.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException ex)
+            catch (System.Exception ex)
             {
                 if (!IsUserExists(id))
                 {
+                    Sentry.SentrySdk.CaptureException(ex);
                     return NotFound(new { status = "failed", message = "No User Found" });
                 }
                 else
                 {
                     Console.WriteLine(ex);
+                    Sentry.SentrySdk.CaptureException(ex);
                     return BadRequest(new { status = "failed", serverMessage = ex.Message, message = "Update User By Id Failed" });
                 }
             }
@@ -132,6 +122,7 @@ namespace Car.Controllers
             catch (System.Exception ex)
             {
                 Console.WriteLine(ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", serverMessage = ex.Message, message = "User registration Failed" });
             }
         }
@@ -145,7 +136,7 @@ namespace Car.Controllers
                 var user = await _context.Users.FindAsync(id);
                 if (user == null)
                 {
-                    return NotFound();
+                    return NotFound(new { status = "failed", message = "No User Found"});
                 }
 
                 _context.Users.Remove(user);
@@ -156,7 +147,34 @@ namespace Car.Controllers
             catch (System.Exception ex)
             {
                 Console.WriteLine(ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", serverMessage = ex.Message, message = "User Delete Failed" });
+            }
+        }
+
+        // GET: api/User/PurchaseHistory/5
+        //GET User Purchase History
+        [HttpGet("PurchaseHistory/{id}")]
+        public async Task<IActionResult> GetUserPurchaseHistory(Guid id)
+        {
+            try{
+                var user = await _context.Users.Where(u => u.Userid == id).FirstAsync();
+                if(user == null){
+                    new Exception();
+                }
+                var purchaseHistory = await _context.Purchases.Where(u => u.Userid == id).Include(u => u.Car).Include(u => u.Car.User).Include(u => u.User).ToListAsync();
+                
+                if (purchaseHistory.FirstOrDefault() == null)
+                {
+                    return Ok(new { status = "success", message = "No Purchase History Found" });
+                } else {
+                    return Ok(new {status = "success", data = purchaseHistory, message = "User Purchase History Succesful"});
+                }
+            }
+            catch(System.Exception ex){
+                Console.WriteLine(ex);
+                Sentry.SentrySdk.CaptureException(ex);
+                return BadRequest(new { status = "failed", serverMessage = ex.Message, message = "Fetching User Purchase History Failed" });
             }
         }
 

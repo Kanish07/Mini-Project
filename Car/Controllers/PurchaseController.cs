@@ -34,6 +34,7 @@ namespace Car.Controllers
             }
             catch (System.Exception ex)
             {
+                Sentry.SentrySdk.CaptureException(ex);
                 Console.WriteLine(ex);
                 return BadRequest(new { status = "failed", serverMessage = ex.Message, message = "Get All Purchases Failed" });
             }
@@ -49,7 +50,7 @@ namespace Car.Controllers
 
                 if (purchase == null)
                 {
-                    return NotFound();
+                    return NotFound(new {status = "failed", message = "Purchase Not Found"});
                 }
 
                 return Ok(new { status = "success", data = purchase, message = "Get Purchase by Id Successful" });
@@ -57,6 +58,7 @@ namespace Car.Controllers
             catch (System.Exception e)
             {
                 Console.WriteLine(e);
+                Sentry.SentrySdk.CaptureException(e);
                 return NotFound(new { status = "failed", serverMessage = e.Message, message = "Purchase Not Found" });
             }
         }
@@ -66,26 +68,23 @@ namespace Car.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePurchase(Guid id, Purchase purchase)
         {
-            if (id != purchase.Purchaseid)
-            {
-                return BadRequest();
-            }
-
             _context.Entry(purchase).State = EntityState.Modified;
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException ex)
+            catch (System.Exception ex)
             {
                 if (!PurchaseExists(id))
                 {
+                    Sentry.SentrySdk.CaptureException(ex);
                     return NotFound(new { status = "failed", message = "No Purchase Found" });
                 }
                 else
                 {
                     Console.WriteLine(ex);
+                    Sentry.SentrySdk.CaptureException(ex);
                     return BadRequest(new { status = "failed", serverMessage = ex.Message, message = "Update User By Id Failed" });
                 }
             }
@@ -101,11 +100,23 @@ namespace Car.Controllers
             {
                 _context.Purchases.Add(purchase);
                 await _context.SaveChangesAsync();
+                // Setting Car Status to SOLD
+                try
+                {
+                    var car = (from c in _context.Cars where c.Carid == purchase.Carid select c).SingleOrDefault();
+                    car.Carstatus = "SOLD";
+                    _context.SaveChanges();
+                }
+                catch (System.Exception ex)
+                {
+                    Sentry.SentrySdk.CaptureException(ex);
+                }
 
                 return CreatedAtAction("GetPurchaseById", new { id = purchase.Purchaseid }, new { status = "success", data = purchase, message = "Purchase registration Successful" });
             }
             catch (System.Exception ex)
             {
+                Sentry.SentrySdk.CaptureException(ex);
                 Console.WriteLine(ex);
                 return BadRequest(new { status = "failed", serverMessage = ex.Message, message = "Purchase registration Failed" });
             }
@@ -120,7 +131,7 @@ namespace Car.Controllers
                 var purchase = await _context.Purchases.FindAsync(id);
                 if (purchase == null)
                 {
-                    return NotFound();
+                    return NotFound(new { status = "failed", message = "No Purchase found"});
                 }
 
                 _context.Purchases.Remove(purchase);
@@ -131,6 +142,7 @@ namespace Car.Controllers
             catch (System.Exception ex)
             {
                 Console.WriteLine(ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", serverMessage = ex.Message, message = "Purchase Delete Failed" });
             }
         }

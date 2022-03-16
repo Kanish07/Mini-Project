@@ -51,6 +51,8 @@ builder.Services.AddCors();
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.AddScoped<IUserServices, UserServices>();
 
+builder.WebHost.UseSentry();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -64,6 +66,12 @@ app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseAuthorization();
 app.UseAuthentication();
 app.UseHttpsRedirection();
+app.UseRouting();
+
+        // Enable automatic tracing integration.
+        // If running with .NET 5 or below, make sure to put this middleware
+        // right after `UseRouting()`.
+app.UseSentryTracing();
 
 // custom jwt auth middleware
 app.UseMiddleware<JwtHelper>();

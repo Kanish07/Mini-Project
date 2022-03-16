@@ -15,9 +15,7 @@ namespace Car.Models
         public string UserCity { get; set; } = null!;
         public Role UserRole { get; set; }
 
-        [JsonIgnore]
         public virtual ICollection<Car>? Cars { get; set; }
-        [JsonIgnore]
         public virtual ICollection<Purchase>? Purchases { get; set; }
     }
 }

@@ -40,19 +40,21 @@ namespace Car.Models
 
         // GET: api/Car/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Car>> GetCarById(Guid id)
+        public async Task<IActionResult> GetCarById(Guid id)
         {
             try
             {
                 var car = await _context.Cars.FindAsync(id);
                 if (car == null)
                 {
-                    return NotFound();
+                    Sentry.SentrySdk.CaptureMessage("Car Not Found");
+                    return NotFound(new { status = "failed", message = "Car Not Found" });
                 }
                 return Ok(new { status = "success", data = car, message = "Get Car By Id Successful" });
             }
             catch (System.Exception ex)
             {
+                Sentry.SentrySdk.CaptureException(ex);
                 return NotFound(new { status = "failed", serverMessage = ex.Message, message = "Car Not Found" });
             }
         }
@@ -62,26 +64,23 @@ namespace Car.Models
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCar(Guid id, Car car)
         {
-            if (id != car.Carid)
-            {
-                return BadRequest();
-            }
-
             _context.Entry(car).State = EntityState.Modified;
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException ex)
+            catch (System.Exception ex)
             {
                 if (!CarExists(id))
                 {
+                    Sentry.SentrySdk.CaptureException(ex);
                     return NotFound(new { status = "failed", message = "No Car Found" });
                 }
                 else
                 {
                     Console.WriteLine(ex);
+                    Sentry.SentrySdk.CaptureException(ex);
                     return BadRequest(new { status = "failed", serverMessage = ex.Message, message = "Update User By Id Failed" });
                 }
             }
@@ -103,6 +102,7 @@ namespace Car.Models
             }
             catch (System.Exception ex)
             {
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", serverMessage = ex.Message, message = "Register Car failed" });
             }
         }
@@ -127,7 +127,27 @@ namespace Car.Models
             catch (System.Exception ex)
             {
                 Console.WriteLine(ex);
+                Sentry.SentrySdk.CaptureException(ex);
                 return BadRequest(new { status = "failed", serverMessage = ex.Message, message = "Car Delete Failed" });
+            }
+        }
+
+        //Get Car By City
+        // GET: api/Car/Coimbatore/5
+        [HttpGet("{id}/{carcity}")]
+        public async Task<IActionResult> getCarByCity(Guid id, string carcity)
+        {
+            try{
+                var car = await _context.Cars.Where(c => c.Carcity.Equals(carcity) && c.User.Userid != id && c.Carstatus.Equals("Active")).ToListAsync();
+                if(car.FirstOrDefault() == null){
+                    return NoContent();
+                }
+                return Ok(new { status = "success", data = car, message = "Get Cars By City Successful" });
+            } 
+            catch(System.Exception ex)
+            {
+                Sentry.SentrySdk.CaptureException(ex);
+                return BadRequest(new {status = "failed", serverMessage = ex.Message, message = "Get car by city failed"});
             }
         }
 
