@@ -7,7 +7,7 @@ create table users(
     username VARCHAR(50) NOT NULL,
     userphno VARCHAR(10) UNIQUE,
     userCity VARCHAR(20) NOT NULL,
-    userRole VARCHAR(10) DEFAULT 'USER'
+    userRole INT DEFAULT 0
 )
 
 create table cars(
