@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using Car.Entities;
+using Newtonsoft.Json;
 
 namespace Car.Models
 {
     public partial class User
     {
-        public User()
-        {
-            Cars = new HashSet<Car>();
-            Purchases = new HashSet<Purchase>();
-        }
-
         public Guid Userid { get; set; }
         public string Useremail { get; set; } = null!;
         public string Userpassword { get; set; } = null!;
@@ -20,7 +15,9 @@ namespace Car.Models
         public string UserCity { get; set; } = null!;
         public Role UserRole { get; set; }
 
-        public virtual ICollection<Car> Cars { get; set; }
-        public virtual ICollection<Purchase> Purchases { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Car>? Cars { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Purchase>? Purchases { get; set; }
     }
 }

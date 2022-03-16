@@ -11,7 +11,7 @@ using Car.Helpers;
 
 namespace Car.Models
 {
-    [Authorize]
+    // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CarController : ControllerBase
@@ -25,29 +25,42 @@ namespace Car.Models
 
         // GET: api/Car
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Car>>> GetCars()
+        public async Task<IActionResult> GetAllCars()
         {
-            return await _context.Cars.ToListAsync();
+            try
+            {
+                var car = await _context.Cars.Include(m => m.User).ToListAsync();
+                return Ok(new { status = "success", data = car, message = "Get All Car Successful" });
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(new { status = "failed", serverMessage = ex.Message, message = "Get All Car Failed" });
+            }
         }
 
         // GET: api/Car/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Car>> GetCar(Guid id)
+        public async Task<ActionResult<Car>> GetCarById(Guid id)
         {
-            var car = await _context.Cars.FindAsync(id);
-
-            if (car == null)
+            try
             {
-                return NotFound();
+                var car = await _context.Cars.FindAsync(id);
+                if (car == null)
+                {
+                    return NotFound();
+                }
+                return Ok(new { status = "success", data = car, message = "Get Car By Id Successful" });
             }
-
-            return car;
+            catch (System.Exception ex)
+            {
+                return NotFound(new { status = "failed", serverMessage = ex.Message, message = "Car Not Found" });
+            }
         }
 
         // PUT: api/Car/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCar(Guid id, Car car)
+        public async Task<IActionResult> UpdateCar(Guid id, Car car)
         {
             if (id != car.Carid)
             {
@@ -60,46 +73,62 @@ namespace Car.Models
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
                 if (!CarExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { status = "failed", message = "No Car Found" });
                 }
                 else
                 {
-                    throw;
+                    Console.WriteLine(ex);
+                    return BadRequest(new { status = "failed", serverMessage = ex.Message, message = "Update User By Id Failed" });
                 }
             }
 
-            return NoContent();
+            return Ok(new { status = "success", message = "Car Updated Successfully" });
         }
 
         // POST: api/Car
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Car>> PostCar(Car car)
+        public async Task<ActionResult<Car>> RegisterNewCar(Car car)
         {
-            _context.Cars.Add(car);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Cars.Add(car);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCar", new { id = car.Carid }, car);
+                return CreatedAtAction("GetCarById", new { id = car.Carid }, new { status = "success", data = car, message = "Register Car Successful" });
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(new { status = "failed", serverMessage = ex.Message, message = "Register Car failed" });
+            }
         }
 
         // DELETE: api/Car/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCar(Guid id)
         {
-            var car = await _context.Cars.FindAsync(id);
-            if (car == null)
+            try
             {
-                return NotFound();
+                var car = await _context.Cars.FindAsync(id);
+                if (car == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Cars.Remove(car);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { status = "success", message = "Deleted User" });
             }
-
-            _context.Cars.Remove(car);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex);
+                return BadRequest(new { status = "failed", serverMessage = ex.Message, message = "Car Delete Failed" });
+            }
         }
 
         private bool CarExists(Guid id)

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "66kjQhD3i4h2xpYaaFTbdxoCUq/I1kvu7Rjz/jCtQQx8VC2Ao5dA6edcQV/lCvnjQx9imBRRrZdqjml2hm6IWg==",
+  "dgSpecHash": "DZqVgozKbRHu/G77hfh60nqO6fnd6t2gI2eE5+/KGJS3vce91M8s2rFBcI7GcZVZtBHep4HK5u+TGxDXquunfg==",
   "success": true,
   "projectFilePath": "/Users/kanishkar/Desktop/Mini Project/Car/Car.csproj",
   "expectedPackageFiles": [
@@ -10,8 +10,8 @@
     "/Users/kanishkar/.nuget/packages/messagepack.annotations/2.1.152/messagepack.annotations.2.1.152.nupkg.sha512",
     "/Users/kanishkar/.nuget/packages/messagepackanalyzer/2.1.152/messagepackanalyzer.2.1.152.nupkg.sha512",
     "/Users/kanishkar/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/6.0.3/microsoft.aspnetcore.authentication.jwtbearer.6.0.3.nupkg.sha512",
-    "/Users/kanishkar/.nuget/packages/microsoft.aspnetcore.jsonpatch/3.0.0/microsoft.aspnetcore.jsonpatch.3.0.0.nupkg.sha512",
-    "/Users/kanishkar/.nuget/packages/microsoft.aspnetcore.mvc.newtonsoftjson/3.0.0/microsoft.aspnetcore.mvc.newtonsoftjson.3.0.0.nupkg.sha512",
+    "/Users/kanishkar/.nuget/packages/microsoft.aspnetcore.jsonpatch/6.0.3/microsoft.aspnetcore.jsonpatch.6.0.3.nupkg.sha512",
+    "/Users/kanishkar/.nuget/packages/microsoft.aspnetcore.mvc.newtonsoftjson/6.0.3/microsoft.aspnetcore.mvc.newtonsoftjson.6.0.3.nupkg.sha512",
     "/Users/kanishkar/.nuget/packages/microsoft.aspnetcore.razor.language/6.0.0/microsoft.aspnetcore.razor.language.6.0.0.nupkg.sha512",
     "/Users/kanishkar/.nuget/packages/microsoft.bcl.asyncinterfaces/5.0.0/microsoft.bcl.asyncinterfaces.5.0.0.nupkg.sha512",
     "/Users/kanishkar/.nuget/packages/microsoft.build/17.0.0/microsoft.build.17.0.0.nupkg.sha512",
@@ -32,7 +32,7 @@
     "/Users/kanishkar/.nuget/packages/microsoft.codeanalysis.visualbasic.workspaces/4.0.0/microsoft.codeanalysis.visualbasic.workspaces.4.0.0.nupkg.sha512",
     "/Users/kanishkar/.nuget/packages/microsoft.codeanalysis.workspaces.common/4.0.0/microsoft.codeanalysis.workspaces.common.4.0.0.nupkg.sha512",
     "/Users/kanishkar/.nuget/packages/microsoft.codeanalysis.workspaces.msbuild/4.0.0/microsoft.codeanalysis.workspaces.msbuild.4.0.0.nupkg.sha512",
-    "/Users/kanishkar/.nuget/packages/microsoft.csharp/4.6.0/microsoft.csharp.4.6.0.nupkg.sha512",
+    "/Users/kanishkar/.nuget/packages/microsoft.csharp/4.7.0/microsoft.csharp.4.7.0.nupkg.sha512",
     "/Users/kanishkar/.nuget/packages/microsoft.data.sqlclient/2.1.4/microsoft.data.sqlclient.2.1.4.nupkg.sha512",
     "/Users/kanishkar/.nuget/packages/microsoft.data.sqlclient.sni.runtime/2.1.1/microsoft.data.sqlclient.sni.runtime.2.1.1.nupkg.sha512",
     "/Users/kanishkar/.nuget/packages/microsoft.diasymreader/1.3.0/microsoft.diasymreader.1.3.0.nupkg.sha512",

@@ -10,7 +10,7 @@ namespace Car.Models
         public Guid Userid { get; set; }
         public DateTime? Purchasedate { get; set; }
 
-        public virtual Car Car { get; set; } = null!;
-        public virtual User User { get; set; } = null!;
+        public virtual Car? Car { get; set; } = null!;
+        public virtual User? User { get; set; } = null!;
     }
 }

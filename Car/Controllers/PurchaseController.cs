@@ -11,7 +11,7 @@ using Car.Helpers;
 
 namespace Car.Controllers
 {
-    [Authorize]
+    // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PurchaseController : ControllerBase
@@ -25,29 +25,46 @@ namespace Car.Controllers
 
         // GET: api/Purchase
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Purchase>>> GetPurchases()
+        public async Task<ActionResult<IEnumerable<Purchase>>> GetAllPurchases()
         {
-            return await _context.Purchases.ToListAsync();
+            try
+            {
+                var purchase = await _context.Purchases.Include(c => c.Car).Include(c => c.Car.User).Include(u => u.User).ToListAsync();
+                return Ok(new { status = "success", data = purchase, message = "Get All Users Successful" });
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex);
+                return BadRequest(new { status = "failed", serverMessage = ex.Message, message = "Get All Purchases Failed" });
+            }
         }
 
         // GET: api/Purchase/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Purchase>> GetPurchase(Guid id)
+        public async Task<ActionResult<Purchase>> GetPurchaseById(Guid id)
         {
-            var purchase = await _context.Purchases.FindAsync(id);
-
-            if (purchase == null)
+            try
             {
-                return NotFound();
-            }
+                var purchase = await _context.Purchases.FindAsync(id);
 
-            return purchase;
+                if (purchase == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(new { status = "success", data = purchase, message = "Get Purchase by Id Successful" });
+            }
+            catch (System.Exception e)
+            {
+                Console.WriteLine(e);
+                return NotFound(new { status = "failed", serverMessage = e.Message, message = "Purchase Not Found" });
+            }
         }
 
         // PUT: api/Purchase/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPurchase(Guid id, Purchase purchase)
+        public async Task<IActionResult> UpdatePurchase(Guid id, Purchase purchase)
         {
             if (id != purchase.Purchaseid)
             {
@@ -60,46 +77,62 @@ namespace Car.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
                 if (!PurchaseExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { status = "failed", message = "No Purchase Found" });
                 }
                 else
                 {
-                    throw;
+                    Console.WriteLine(ex);
+                    return BadRequest(new { status = "failed", serverMessage = ex.Message, message = "Update User By Id Failed" });
                 }
             }
-
-            return NoContent();
+            return Ok(new { status = "success", message = "Details Updated" });
         }
 
         // POST: api/Purchase
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Purchase>> PostPurchase(Purchase purchase)
+        public async Task<ActionResult<Purchase>> RegisterNewPurchase(Purchase purchase)
         {
-            _context.Purchases.Add(purchase);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Purchases.Add(purchase);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPurchase", new { id = purchase.Purchaseid }, purchase);
+                return CreatedAtAction("GetPurchaseById", new { id = purchase.Purchaseid }, new { status = "success", data = purchase, message = "Purchase registration Successful" });
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex);
+                return BadRequest(new { status = "failed", serverMessage = ex.Message, message = "Purchase registration Failed" });
+            }
         }
 
         // DELETE: api/Purchase/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePurchase(Guid id)
         {
-            var purchase = await _context.Purchases.FindAsync(id);
-            if (purchase == null)
+            try
             {
-                return NotFound();
+                var purchase = await _context.Purchases.FindAsync(id);
+                if (purchase == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Purchases.Remove(purchase);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { status = "success", message = "Deleted Purchase" });
             }
-
-            _context.Purchases.Remove(purchase);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex);
+                return BadRequest(new { status = "failed", serverMessage = ex.Message, message = "Purchase Delete Failed" });
+            }
         }
 
         private bool PurchaseExists(Guid id)

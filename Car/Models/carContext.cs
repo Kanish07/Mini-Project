@@ -73,6 +73,11 @@ namespace Car.Models
                     .HasMaxLength(30)
                     .IsUnicode(false)
                     .HasColumnName("cartype");
+                
+                entity.Property(e => e.Carprice)
+                    .IsUnicode(false)
+                    .HasColumnName("carprice")
+                    .HasDefaultValueSql("(0)");
 
                 entity.Property(e => e.Userid).HasColumnName("userid");
 

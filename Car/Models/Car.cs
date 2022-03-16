@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Car.Models
 {
@@ -18,9 +19,11 @@ namespace Car.Models
         public string Cartype { get; set; } = null!;
         public string Carcity { get; set; } = null!;
         public string Carfuel { get; set; } = null!;
+        public int Carprice { get; set; }
         public Guid Userid { get; set; }
         
         public virtual User? User { get; set; } = null!;
+        [JsonIgnore]
         public virtual ICollection<Purchase> Purchases { get; set; }
     }
 }
