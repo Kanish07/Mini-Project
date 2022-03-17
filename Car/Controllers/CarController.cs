@@ -151,6 +151,25 @@ namespace Car.Models
             }
         }
 
+        [Authorize(Role.Admin)]
+        [HttpGet("/soldcars")]
+        public async Task<IActionResult> getAllSoldCars()
+        {
+            try
+            {
+                var soldCars = await _context.Cars.Where(s => s.Carstatus.Equals("sold")).ToListAsync();
+                if(soldCars.FirstOrDefault() == null){
+                    return NoContent();
+                }
+                return Ok(new {status = "success", data = soldCars, message = "Get All Sold Cars Successful"});
+            }
+            catch (System.Exception ex)
+            {
+                Sentry.SentrySdk.CaptureException(ex);
+                return BadRequest(new {status = "failed", serverMessage = ex.Message, message = "Get car by city failed"});
+            }
+        }
+
         private bool CarExists(Guid id)
         {
             return _context.Cars.Any(e => e.Carid == id);
