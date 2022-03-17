@@ -99,19 +99,12 @@ namespace Car.Controllers
             try
             {
                 _context.Purchases.Add(purchase);
-                await _context.SaveChangesAsync();
                 // Setting Car Status to SOLD
-                try
-                {
-                    var car = (from c in _context.Cars where c.Carid == purchase.Carid select c).SingleOrDefault();
-                    car.Carstatus = "SOLD";
-                    _context.SaveChanges();
-                }
-                catch (System.Exception ex)
-                {
-                    Sentry.SentrySdk.CaptureException(ex);
-                }
-
+                var car = await _context.Cars.Where(c => c.Carid == purchase.Carid).FirstOrDefaultAsync();
+                car.Carstatus = "SOLD";
+                _context.Entry(car).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                
                 return CreatedAtAction("GetPurchaseById", new { id = purchase.Purchaseid }, new { status = "success", data = purchase, message = "Purchase registration Successful" });
             }
             catch (System.Exception ex)
