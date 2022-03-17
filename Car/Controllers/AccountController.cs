@@ -1,6 +1,7 @@
 using Car.Helpers;
 using Car.Models;
 using Car.Services;
+using Car.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Car.Controllers;
