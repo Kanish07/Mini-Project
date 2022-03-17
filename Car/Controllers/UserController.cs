@@ -29,8 +29,8 @@ namespace Car.Controllers
         {
             try
             {
-                var user = _context.Users.Include(u => u.Cars).Include(u => u.Purchases);
-                return Ok(new { status = "success", data = await user.ToListAsync(), message = "Get All Users Successful" });
+                var user = await _context.Users.Include(u => u.Cars).Include(u => u.Purchases).ToListAsync();
+                return Ok(new { status = "success", data = user, message = "Get All Users Successful" });
             }
             catch (System.Exception e)
             {
