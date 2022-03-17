@@ -157,7 +157,7 @@ namespace Car.Models
         {
             try
             {
-                var soldCars = await _context.Cars.Where(s => s.Carstatus.Equals("sold")).ToListAsync();
+                var soldCars = await _context.Cars.Where(s => s.Carstatus.Equals("sold")).Include(u => u.User).ToListAsync();
                 if(soldCars.FirstOrDefault() == null){
                     return NoContent();
                 }
